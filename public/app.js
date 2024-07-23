@@ -146,6 +146,7 @@ async function addTodo() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({ text: todoText }),
     });
@@ -200,6 +201,7 @@ function createTodoItem(todo, index) {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({ completed: checkbox.checked }),
       });

@@ -78,7 +78,7 @@ const sqlite3 = require("sqlite3").verbose();
 
 const app = express();
 const port = process.env.PORT || 3000;
-const API_URL = "https://todo-app-4dqx.onrender.com" || "http://localhost:3000";
+const API_URL = "https://todo-app-4dqx.onrender.com";
 
 const db = new sqlite3.Database("database.db");
 
