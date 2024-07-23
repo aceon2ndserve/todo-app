@@ -71,32 +71,121 @@
 // app.listen(port, () => {
 //   console.log(`Server running`);
 // });
+// const express = require("express");
+// const bodyParser = require("body-parser");
+// const cors = require("cors");
+// const sqlite3 = require("sqlite3").verbose();
+
+// const app = express();
+// const port = process.env.PORT || 3000;
+// const API_URL = "https://todo-app-4dqx.onrender.com";
+
+// const db = new sqlite3.Database("database.db");
+
+// app.use(cors());
+// app.use(bodyParser.json());
+// app.use(express.static("public")); // Serve static files from the 'public' folder
+
+// db.serialize(() => {
+//   db.run(`CREATE TABLE IF NOT EXISTS todos (
+//     id INTEGER PRIMARY KEY AUTOINCREMENT,
+//     text TEXT NOT NULL,
+//     completed BOOLEAN NOT NULL DEFAULT 0
+//   )`);
+// });
+
+// app.get("/todos", (req, res) => {
+//   db.all("SELECT * FROM todos", [], (err, rows) => {
+//     if (err) {
+//       return res.status(500).json({ error: err.message });
+//     }
+//     res.json(rows);
+//   });
+// });
+
+// app.post("/todos", (req, res) => {
+//   const { text } = req.body;
+//   db.run(
+//     "INSERT INTO todos (text, completed) VALUES (?, ?)",
+//     [text, false],
+//     function (err) {
+//       if (err) {
+//         return res.status(500).json({ error: err.message });
+//       }
+//       res.json({ id: this.lastID, text, completed: false });
+//     }
+//   );
+// });
+
+// app.delete("/todos/:id", (req, res) => {
+//   const { id } = req.params;
+//   db.run("DELETE FROM todos WHERE id = ?", id, (err) => {
+//     if (err) {
+//       return res.status(500).json({ error: err.message });
+//     }
+//     res.status(204).send();
+//   });
+// });
+
+// app.put("/todos/:id", (req, res) => {
+//   const { id } = req.params;
+//   const { completed } = req.body;
+//   db.run(
+//     "UPDATE todos SET completed = ? WHERE id = ?",
+//     [completed, id],
+//     function (err) {
+//       if (err) {
+//         return res.status(500).json({ error: err.message });
+//       }
+//       res.json({ id, completed });
+//     }
+//   );
+// });
+
+// app.listen(port, () => {
+//   console.log(`Server running at ${API_URL}`);
+// });
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const sqlite3 = require("sqlite3").verbose();
+const path = require("path");
 
 const app = express();
 const port = process.env.PORT || 3000;
-const API_URL = "https://todo-app-4dqx.onrender.com";
+const API_URL = process.env.API_URL || `http://localhost:${port}`;
 
-const db = new sqlite3.Database("database.db");
+const db = new sqlite3.Database("database.db", (err) => {
+  if (err) {
+    console.error("Error opening database:", err.message);
+  } else {
+    console.log("Connected to SQLite database.");
+  }
+});
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static("public")); // Serve static files from the 'public' folder
+app.use(express.static(path.join(__dirname, "public"))); // Serve static files from the 'public' folder
 
 db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS todos (
+  db.run(
+    `CREATE TABLE IF NOT EXISTS todos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     text TEXT NOT NULL,
     completed BOOLEAN NOT NULL DEFAULT 0
-  )`);
+  )`,
+    (err) => {
+      if (err) {
+        console.error("Error creating table:", err.message);
+      }
+    }
+  );
 });
 
 app.get("/todos", (req, res) => {
   db.all("SELECT * FROM todos", [], (err, rows) => {
     if (err) {
+      console.error("Error fetching todos:", err.message);
       return res.status(500).json({ error: err.message });
     }
     res.json(rows);
@@ -110,6 +199,7 @@ app.post("/todos", (req, res) => {
     [text, false],
     function (err) {
       if (err) {
+        console.error("Error inserting todo:", err.message);
         return res.status(500).json({ error: err.message });
       }
       res.json({ id: this.lastID, text, completed: false });
@@ -121,6 +211,7 @@ app.delete("/todos/:id", (req, res) => {
   const { id } = req.params;
   db.run("DELETE FROM todos WHERE id = ?", id, (err) => {
     if (err) {
+      console.error("Error deleting todo:", err.message);
       return res.status(500).json({ error: err.message });
     }
     res.status(204).send();
@@ -135,6 +226,7 @@ app.put("/todos/:id", (req, res) => {
     [completed, id],
     function (err) {
       if (err) {
+        console.error("Error updating todo:", err.message);
         return res.status(500).json({ error: err.message });
       }
       res.json({ id, completed });
