@@ -4,7 +4,8 @@ const cors = require("cors");
 const sqlite3 = require("sqlite3").verbose();
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
+const API_URL = "https://todo-app-4dqx.onrender.com";
 
 const db = new sqlite3.Database("database.db");
 
@@ -68,5 +69,5 @@ app.put("/todos/:id", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running`);
 });
