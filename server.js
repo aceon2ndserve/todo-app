@@ -153,7 +153,7 @@ const path = require("path");
 
 const app = express();
 const port = process.env.PORT || 3000;
-const API_URL = process.env.API_URL || `http://localhost:${port}`;
+const API_URL = process.env.API_URL;
 
 const db = new sqlite3.Database("database.db", (err) => {
   if (err) {
