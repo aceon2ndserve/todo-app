@@ -117,6 +117,7 @@
 //     console.error("Error deleting todo:", error);
 //   }
 // }
+const API_URL = "https://todo-app-5d6b.onrender.com";
 const todoForm = document.querySelector("form");
 const todoInput = document.getElementById("todo-input");
 const todoListUL = document.getElementById("todo-list");
@@ -141,7 +142,7 @@ async function addTodo() {
   const todoText = todoInput.value.trim();
   if (todoText.length === 0) return;
   try {
-    const response = await fetch(`${process.env.API_URL}/todos`, {
+    const response = await fetch(`${API_URL}/todos`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -196,17 +197,14 @@ function createTodoItem(todo, index) {
   checkbox.addEventListener("change", async () => {
     const updatedTodo = { ...allTodos[index], completed: checkbox.checked };
     try {
-      const response = await fetch(
-        `${process.env.API_URL}/todos/${allTodos[index].id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-          body: JSON.stringify({ completed: checkbox.checked }),
-        }
-      );
+      const response = await fetch(`${API_URL}/todos/${allTodos[index].id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({ completed: checkbox.checked }),
+      });
       allTodos[index] = await response.json();
     } catch (error) {
       console.error("Error updating todo:", error);
@@ -218,7 +216,7 @@ function createTodoItem(todo, index) {
 
 async function loadTodos() {
   try {
-    const response = await fetch(`${process.env.API_URL}/todos`);
+    const response = await fetch(`${API_URL}/todos`);
     const todos = await response.json();
     console.log("Loaded todos:", todos); // Debug output
     return todos;
@@ -231,7 +229,7 @@ async function loadTodos() {
 async function deleteTodo(index) {
   const todo = allTodos[index];
   try {
-    await fetch(`${process.env.API_URL}/todos/${todo.id}`, {
+    await fetch(`${API_URL}/todos/${todo.id}`, {
       method: "DELETE",
     });
     allTodos = allTodos.filter((_, i) => i !== index);
