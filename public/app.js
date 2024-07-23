@@ -141,7 +141,7 @@ async function addTodo() {
   const todoText = todoInput.value.trim();
   if (todoText.length === 0) return;
   try {
-    const response = await fetch(`${process.envAPI_URL}/todos`, {
+    const response = await fetch(`${process.env.API_URL}/todos`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -197,7 +197,7 @@ function createTodoItem(todo, index) {
     const updatedTodo = { ...allTodos[index], completed: checkbox.checked };
     try {
       const response = await fetch(
-        `${process.envAPI_URL}/todos/${allTodos[index].id}`,
+        `${process.env.API_URL}/todos/${allTodos[index].id}`,
         {
           method: "PUT",
           headers: {
@@ -218,7 +218,7 @@ function createTodoItem(todo, index) {
 
 async function loadTodos() {
   try {
-    const response = await fetch(`${process.envAPI_URL}/todos`);
+    const response = await fetch(`${process.env.API_URL}/todos`);
     const todos = await response.json();
     console.log("Loaded todos:", todos); // Debug output
     return todos;
@@ -231,7 +231,7 @@ async function loadTodos() {
 async function deleteTodo(index) {
   const todo = allTodos[index];
   try {
-    await fetch(`${process.envAPI_URL}/todos/${todo.id}`, {
+    await fetch(`${process.env.API_URL}/todos/${todo.id}`, {
       method: "DELETE",
     });
     allTodos = allTodos.filter((_, i) => i !== index);
