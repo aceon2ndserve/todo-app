@@ -1,4 +1,4 @@
-const API_URL = "https://todo-app-4dqx.onrender.com/";
+const API_URL = "https://todo-app-4dqx.onrender.com";
 const todoForm = document.querySelector("form");
 const todoInput = document.getElementById("todo-input");
 const todoListUL = document.getElementById("todo-list");
